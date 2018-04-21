@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GIFtastic!</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+        crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+        <div class="jumbotron">
+
+    <h1>Quench your thirst!</h1>
+
+    <div id="saved-buttons"></div>
+    <br>
+    <div id="user-input">
+        <input type="text" placeholder="enter your favorite drink" id="input-area">
+        <button type="submit" id="submit-btn">submit</button>
+    </div>
+    <br>
+    <div id="display-gifs"></div>
+
+    </div></div>
+
+    <script type="text/javascript">
+
+        var drinks = ["coffee", "koolaid", "margarita", "champagne", "beer", "soda", "tea", "wine", "orange juice", "hot cocoa",];
+
+        function displayBtn() {
+
+            // deletes the GIF prior
+            $("#saved-buttons").empty();
+
+            for (var i = 0; i < drinks.length; i++) {
+                var drinkButton = $("<button>")
+                //calling the addClass method
+                //same as button class = drink
+                drinkButton.addClass("drink")
+                drinkButton.attr("data-type", drinks[i])
+                //add text to drink button
+                drinkButton.text(drinks[i])
+
+
+                //use Jquery to append buttons to div
+                $("#saved-buttons").append(drinkButton)
+            }
+        }
+   
+
+        // button event
+        $("#submit-btn").on("click", function () {
+
+            // grabs the user input
+            var drink = $("#input-area").val().trim();
+            // input adds to the array
+            drinks.push(drink);
+    
+            displayBtn();
+
+            // this line is so users can hit "enter" instead of clicking the submit button
+            // BUT IT'S NOT WORKING!
+            return false;
+        })
+
+
+        // function to display gifs
+        function displayGifs() {
+
+            var drink = $(this).attr("data-type")
+            // console.log(drink)
+            var queryURL = "http://api.giphy.com/v1/gifs/search?q=" + drink + "&api_key=FMmyVXKFNlRJqra7NkshYZUvUKN3JZit&limit=10";
+
+            // creates ajax call
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).done(function (response) {
+
+                console.log(response.data);
+
+                // save results as a variable
+                var results = response.data;
+                // for loop goes through each gif and adds these variables
+                for (var i = 0; i < results.length; i++) {
+
+                    // creates div to hold the results
+                    var gifDiv = $('<div class=gifs>');
+                    var showGif = $('<img>');
+                    showGif.attr('src', results[i].images.fixed_height_still.url);
+
+                    // rating displayed over hover
+                    showGif.attr('title', "Rating: " + results[i].rating);
+                    showGif.attr('data-still', results[i].images.fixed_height_still.url);
+                    showGif.attr('data-state', 'still');
+                    showGif.addClass('gif');
+                    showGif.attr('data-animate', results[i].images.fixed_height.url);
+                    gifDiv.append(showGif)
+
+                    $("#display-gifs").prepend(gifDiv);
+                }
+
+            });
+        }
+
+
+        // function for animating gifs
+        $(document).on('click', '.gif', function () {
+            var state = $(this).attr('data-state');
+
+            if (state == 'still') {
+                $(this).attr('src', $(this).data('animate'));
+                $(this).attr('data-state', 'animate');
+            } else {
+                $(this).attr('src', $(this).data('still'));
+                $(this).attr('data-state', 'still');
+            };
+        });
+
+
+        // function for displaying gifs
+        $(document).on("click", ".drink", displayGifs);
+
+        displayBtn();
+
+    </script>
+
+
+</body>
+
+</html>

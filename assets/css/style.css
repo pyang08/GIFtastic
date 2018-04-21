@@ -1,0 +1,39 @@
+body {
+    background: url("images/beachbg.jpg") no-repeat center center fixed;
+    background-size: 100%;
+    text-align: center;
+}
+
+.container {
+	width: 75%;
+}
+
+.jumbotron {
+    background: rgb(200, 54, 54); 
+    background: rgba(200, 54, 54, 0.5); 
+    color: #fff;
+ }
+
+h1 {
+    color: #fff;
+    font-size: 65px;
+    font-family: 'Indie Flower', cursive;
+}
+
+button {
+	background: #01A9DB;
+	margin: 5px;
+	font-family: 'Indie Flower', cursive;
+    color: #fff;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+button:hover {
+    opacity: 1;
+}
+
+input[type=text] {
+    background-color: #FFBF00;
+    color: #fff;
+}
